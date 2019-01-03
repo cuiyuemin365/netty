@@ -27,6 +27,7 @@ final class DefaultSelectStrategy implements SelectStrategy {
 
     @Override
     public int calculateStrategy(IntSupplier selectSupplier, boolean hasTasks) throws Exception {
+        //如果当前有任务，则直接返回，不然阻塞。
         return hasTasks ? selectSupplier.get() : SelectStrategy.SELECT;
     }
 }

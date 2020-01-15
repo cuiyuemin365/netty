@@ -166,6 +166,7 @@ public abstract class AbstractNioByteChannel extends AbstractNioChannel {
             Object msg = in.current();
             if (msg == null) {
                 // Wrote all messages.
+                // 清除半包标志，退出循环
                 clearOpWrite();
                 // Directly return here so incompleteWrite(...) is not called.
                 return;
@@ -182,6 +183,7 @@ public abstract class AbstractNioByteChannel extends AbstractNioChannel {
                 boolean done = false;
                 long flushedAmount = 0;
                 if (writeSpinCount == -1) {
+                    // 写自旋次数
                     writeSpinCount = config().getWriteSpinCount();
                 }
                 for (int i = writeSpinCount - 1; i >= 0; i --) {

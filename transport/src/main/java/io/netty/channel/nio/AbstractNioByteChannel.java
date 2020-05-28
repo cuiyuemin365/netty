@@ -116,11 +116,15 @@ public abstract class AbstractNioByteChannel extends AbstractNioChannel {
             allocHandle.reset(config);
 
             ByteBuf byteBuf = null;
-            boolean close = false;
+            boolean close = false;// 是否关闭连接
             try {
                 do {
+                    // 申请 ByteBuf 对象
                     byteBuf = allocHandle.allocate(allocator);
+                    // 读取数据
+                    // 设置最后读取字节数
                     allocHandle.lastBytesRead(doReadBytes(byteBuf));
+                    // 1.未读取到数据
                     if (allocHandle.lastBytesRead() <= 0) {
                         // nothing was read. release the buffer.
                         byteBuf.release();
@@ -128,7 +132,7 @@ public abstract class AbstractNioByteChannel extends AbstractNioChannel {
                         close = allocHandle.lastBytesRead() < 0;
                         break;
                     }
-
+                    // 2.读取到数据
                     allocHandle.incMessagesRead(1);
                     readPending = false;
                     pipeline.fireChannelRead(byteBuf);
